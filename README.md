@@ -1,6 +1,8 @@
 # wolverine v2.0
 Managers ValleyWorks Google Sheets.
 
+![alt text](/logo.png)
+
 ### Installation.
 ```
 pip install -e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine -I
