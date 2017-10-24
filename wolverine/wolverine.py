@@ -57,16 +57,31 @@ class Wolverine(object):
                                   majdim=mode)) or []
 
     def iterator(self, sname):
+
+        # Initializing...
         logger.warning("Iterating over: {}".format(sname))
         assert sname
+        head = {}
+
+        # Get Header.
         y = self.getTotalColumns(sname)
         head = self.getCells(sname, (1, 1), (1, y), mode="ROWS")[0]
-        i = 2
+
+        # Load Body.
+        i = 1
         while i < self.getTotalRows(sname):
+
+            # Get a group of rows.
             j = min(i + 30, self.getTotalRows(sname))
             for body in self.getCells(sname, (i, j), (1, y), mode="ROWS")[0]:
+
+                # The body is empty?
                 if not body:
                     break
-                yield {head[j]: body[j] for j in range(0, min(len(head), len(body))) if head[j]}
+
+                # Return row.
+                yield {head[k]: body[k] for k in range(0, min(len(head), len(body))) if head[k]}
+
             i = j
+
         assert i > 2

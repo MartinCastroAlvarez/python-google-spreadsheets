@@ -6,7 +6,7 @@ from os import walk
 packages = [d for d,_,__ in walk('wolverine') if exists(join(d,'__init__.py'))]
 
 setup(
-    version='2.1',
+    version='2.2',
     name='wolverine',
     description='Wolverine.',
     maintainer='martin castro',
