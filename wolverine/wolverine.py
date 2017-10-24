@@ -66,16 +66,19 @@ class Wolverine(object):
         # Get Header.
         y = self.getTotalColumns(sname)
         head = self.getCells(sname, (1, 1), (1, y), mode="ROWS")[0]
+        logger.warning("Head is: {}".format(head))
 
         # Load Body.
         i = 1
         while i < self.getTotalRows(sname):
 
             # Get a group of rows.
+            logger.warning("Fetching more rows...")
             j = min(i + 30, self.getTotalRows(sname))
             for body in self.getCells(sname, (i, j), (1, y), mode="ROWS")[0]:
 
                 # The body is empty?
+                logger.warning("Body is: {}".format(body))
                 if not body:
                     break
 
