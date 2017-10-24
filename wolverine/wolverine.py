@@ -23,7 +23,7 @@ class Wolverine(object):
     def getSheet(self, sname):
         if not hasattr(self, "_sheets"):
             self._sheets = {}
-        if sname not in self._sheets
+        if sname not in self._sheets:
             self._sheets[sname] = self.gsheet.worksheet_by_title(sname)
         return self._sheets[sname]
 

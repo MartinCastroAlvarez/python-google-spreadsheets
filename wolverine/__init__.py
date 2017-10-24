@@ -1,1 +1,1 @@
-from .wolverine import Wolverine
+from .wolverine import Wolverine  # noqa
