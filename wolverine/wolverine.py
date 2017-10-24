@@ -69,7 +69,7 @@ class Wolverine(object):
         logger.warning("Head is: {}".format(head))
 
         # Load Body.
-        i = 1
+        i = 2
         while i < self.getTotalRows(sname):
 
             # Get a group of rows.
