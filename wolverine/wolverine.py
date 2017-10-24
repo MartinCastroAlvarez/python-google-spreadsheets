@@ -75,7 +75,7 @@ class Wolverine(object):
             # Get a group of rows.
             logger.warning("Fetching more rows...")
             j = min(i + 30, self.getTotalRows(sname))
-            for body in self.getCells(sname, (i, j), (1, y), mode="ROWS")[0]:
+            for body in self.getCells(sname, (i, j), (1, y), mode="ROWS"):
 
                 # The body is empty?
                 logger.warning("Body is: {}".format(body))
