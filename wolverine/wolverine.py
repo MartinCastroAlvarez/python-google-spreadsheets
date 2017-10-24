@@ -79,7 +79,7 @@ class Wolverine(object):
 
                 # The body is empty?
                 logger.warning("Body is: {}".format(body))
-                if not body or (len(body) is 1 and not body[0]):
+                if not body or (len(body) == 1 and not body[0]):
                     break
 
                 # Return row.
