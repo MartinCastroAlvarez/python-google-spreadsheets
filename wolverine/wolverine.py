@@ -56,7 +56,7 @@ class Wolverine(object):
                                   (x[1], y[1]),
                                   majdim=mode)) or []
 
-    def iterator(self, sname):
+    def iterator(self, sname, bulk=50):
 
         # Initializing...
         logger.warning("Iterating over: {}".format(sname))
@@ -74,7 +74,7 @@ class Wolverine(object):
 
             # Get a group of rows.
             logger.warning("Fetching more rows...")
-            j = min(i + 30, self.getTotalRows(sname))
+            j = min(i + bulk, self.getTotalRows(sname))
             for body in self.getCells(sname, (i, j), (1, y), mode="ROWS"):
 
                 # The body is empty?
