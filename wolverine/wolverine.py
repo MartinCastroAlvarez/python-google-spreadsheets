@@ -28,17 +28,17 @@ class Wolverine(object):
         return self._sheets[sname]
 
     def getTotalRows(self, sname):
-        logger.warning("Getting total amount of rows: {}".format(sname))
+        logger.debug("Getting total amount of rows: {}".format(sname))
         assert sname
         return self.getSheet(sname).rows
 
     def getTotalColumns(self, sname):
-        logger.warning("Getting total amount of columns: {}".format(sname))
+        logger.debug("Getting total amount of columns: {}".format(sname))
         assert sname
         return self.getSheet(sname).cols
 
     def getCells(self, sname, x, y, mode="ROWS"):
-        logger.warning("Getting cells: {}".format(sname))
+        logger.debug("Getting cells: {}".format(sname))
         assert sname
         assert mode in "ROWS", "COLUMNS"
         assert type(x) is tuple
@@ -59,27 +59,28 @@ class Wolverine(object):
     def iterator(self, sname, bulk=50):
 
         # Initializing...
-        logger.warning("Iterating over: {}".format(sname))
+        logger.debug("Iterating over: {}".format(sname))
         assert sname
         head = {}
 
         # Get Header.
         y = self.getTotalColumns(sname)
         head = self.getCells(sname, (1, 1), (1, y), mode="ROWS")[0]
-        logger.warning("Head is: {}".format(head))
+        logger.debug("Head is: {}".format(head))
 
         # Load Body.
         i = 2
         while i < self.getTotalRows(sname):
 
             # Get a group of rows.
-            logger.warning("Fetching more rows...")
+            logger.debug("Fetching more rows...")
             j = min(i + bulk, self.getTotalRows(sname))
             for body in self.getCells(sname, (i, j), (1, y), mode="ROWS"):
 
                 # The body is empty?
-                logger.warning("Body is: {}".format(body))
+                logger.debug("Body is: {}".format(body))
                 if not body or (len(body) == 1 and not body[0]):
+                    logger.debug("No more rows to fetch!")
                     i = self.getTotalRows(sname)
                     break
 

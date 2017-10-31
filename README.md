@@ -1,4 +1,4 @@
-# wolverine v2.6
+# wolverine v2.7
 Library for managing ValleyWorks Google Sheets.
 
 ![alt text](/logo.png)
