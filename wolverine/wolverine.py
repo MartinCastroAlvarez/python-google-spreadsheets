@@ -80,6 +80,7 @@ class Wolverine(object):
                 # The body is empty?
                 logger.warning("Body is: {}".format(body))
                 if not body or (len(body) == 1 and not body[0]):
+                    i = self.getTotalRows(sname)
                     break
 
                 # Return row.
