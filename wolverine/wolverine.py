@@ -70,7 +70,8 @@ class Wolverine(object):
 
         # Load Body.
         i = 2
-        while i < self.getTotalRows(sname):
+        mustExit = False
+        while i < self.getTotalRows(sname) and not mustExit:
 
             # Get a group of rows.
             logger.debug("Fetching more rows...")
@@ -81,7 +82,7 @@ class Wolverine(object):
                 logger.debug("Body is: {}".format(body))
                 if not body or (len(body) == 1 and not body[0]):
                     logger.debug("No more rows to fetch!")
-                    i = self.getTotalRows(sname)
+                    mustExit = True
                     break
 
                 # Return row.
