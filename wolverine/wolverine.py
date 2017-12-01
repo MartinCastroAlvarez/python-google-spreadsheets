@@ -1,5 +1,6 @@
 import pygsheets
 import logging
+import json
 import os
 
 logger = logging.getLogger(__name__)
@@ -14,9 +15,21 @@ class Wolverine(object):
     @property
     def gsheet(self):
         if not hasattr(self, "_xls"):
-            root = os.path.dirname(__file__)
-            cpath = os.path.join(root, "credentials.json")
-            gc = pygsheets.authorize(service_file=cpath)
+            logger.debug("Loading creentials from $env")
+            credentials = os.path.join(os.sep, "tmp", ".wolvierne.json")
+            c = {
+                "private_key_id": os.environ['GOOGLE_PRIVATE_KEY_ID'],
+                "private_key": os.environ['GOOGLE_PRIVATE_KEY'],
+                "client_email": os.environ['GOOGLE_CLIENT_EMAIL'],
+                "client_id": os.environ['GOOGLE_CLIENT_ID'],
+                "type": os.environ['GOOGLE_TYPE'],
+            }
+            if os.path.isfile(credentials):
+                os.remove(credentials)
+            with open(credentials, "w") as f:
+                json.dump(c, f)
+            gc = pygsheets.authorize(service_file=credentials)
+            os.remove(credentials)
             self._xls = gc.open_by_key(self.sid)
         return self._xls
 
