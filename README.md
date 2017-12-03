@@ -15,10 +15,10 @@ GOOGLE_PRIVATE_KEY_ID=""
 GOOGLE_PRIVATE_KEY=""
 GOOGLE_CLIENT_EMAIL=""
 GOOGLE_CLIENT_ID=""
-GOOGLE_TYPE']=""
+GOOGLE_TYPE'=""
 ```
 
-### Export to JSON
+### Export Google Sheet to JSON.
 ```
 from wolverine import Wolverine
 
