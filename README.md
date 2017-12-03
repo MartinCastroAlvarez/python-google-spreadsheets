@@ -31,8 +31,8 @@ j = w.getCells("TestSheet", (1,2), (4, 5))
 from wolverine import Wolverine
 
 w = Wolverine('23192312-12312-123-123')
-w.getTotalRows("TestSheet")
-w.getTotalColumns("TestSheet")
+total_rows = w.getTotalRows("TestSheet")
+total_columns = w.getTotalColumns("TestSheet")
 ```
 
 ### Iterate over all rows in the Google Sheet.
