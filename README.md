@@ -1,4 +1,4 @@
-# wolverine v2.8
+# wolverine v2.9
 Library for managing ValleyWorks Google Sheets.
 
 ![alt text](/logo.png)
@@ -7,6 +7,15 @@ Library for managing ValleyWorks Google Sheets.
 ```
 pip install -e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine -I
 echo "-e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine" >> requirements.txt
+```
+
+### Set your environment variables.
+``
+GOOGLE_PRIVATE_KEY_ID=""
+GOOGLE_PRIVATE_KEY=""
+GOOGLE_CLIENT_EMAIL=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_TYPE']=""
 ```
 
 ### Export to JSON
