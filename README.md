@@ -24,8 +24,22 @@ from wolverine import Wolverine
 
 w = Wolverine('23192312-12312-123-123')
 j = w.getCells("TestSheet", (1,2), (4, 5))
+```
+
+### Get Google Sheet dimensions.
+```
+from wolverine import Wolverine
+
+w = Wolverine('23192312-12312-123-123')
 w.getTotalRows("TestSheet")
 w.getTotalColumns("TestSheet")
+```
+
+### Iterate over all rows in the Google Sheet.
+```
+from wolverine import Wolverine
+
+w = Wolverine('23192312-12312-123-123')
 for row in w.iterator("TestSheet"):
     print(row)
 ```
