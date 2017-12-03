@@ -15,7 +15,7 @@ GOOGLE_PRIVATE_KEY_ID=""
 GOOGLE_PRIVATE_KEY=""
 GOOGLE_CLIENT_EMAIL=""
 GOOGLE_CLIENT_ID=""
-GOOGLE_TYPE'=""
+GOOGLE_TYPE=""
 ```
 
 ### Export Google Sheet to JSON.
@@ -23,7 +23,7 @@ GOOGLE_TYPE'=""
 from wolverine import Wolverine
 
 w = Wolverine('23192312-12312-123-123')
-j = w.getCells("TestSheet", (1,2), (4, 5), "COLUMNS")
+j = w.getCells("TestSheet", (1,2), (4, 5))
 w.getTotalRows("TestSheet")
 w.getTotalColumns("TestSheet")
 for row in w.iterator("TestSheet"):
