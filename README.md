@@ -1,5 +1,5 @@
-# wolverine v2.9
-Library for managing ValleyWorks Google Sheets.
+# wolverine v2.10
+Library for managing your Google Sheets.
 
 ![alt text](/logo.png)
 
@@ -10,7 +10,7 @@ echo "-e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine" >> re
 ```
 
 ### Set your environment variables.
-``
+```
 GOOGLE_PRIVATE_KEY_ID=""
 GOOGLE_PRIVATE_KEY=""
 GOOGLE_CLIENT_EMAIL=""
