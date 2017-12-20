@@ -1,7 +1,13 @@
 # wolverine v2.10
 Library for managing your Google Sheets.
 
-![alt text](/logo.png)
+![logo](/logo.png)
+
+### Flow
+[Wolverine](https://github.com/valleyworks/wolverine.git)
+allows you to download CSV files from Google Sheets.
+
+![flow](/flow.png)
 
 ### Installation
 ```
