@@ -41,17 +41,43 @@ class Wolverine(object):
         return self._sheets[sname]
 
     def getTotalRows(self, sname):
+        """ Returns the total amount of rows. """
         logger.debug("Getting total amount of rows: {}".format(sname))
+
+        # Send fake count.
+        if os.environ.get('PYTEST', False):
+            return 10
+
+        # Return total rows.
         assert sname
         return self.getSheet(sname).rows
 
     def getTotalColumns(self, sname):
+        """ Returns the amount of columns in a sheet. """
         logger.debug("Getting total amount of columns: {}".format(sname))
+
+        # Send fake count.
+        if os.environ.get('PYTEST', False):
+            return 10
+
+        # Return real amount of cols.
         assert sname
         return self.getSheet(sname).cols
 
     def getCells(self, sname, x, y, mode="ROWS"):
+        """ Get some cells as a json matrix. """
         logger.debug("Getting cells: {}".format(sname))
+
+        # Send fake values.
+        if os.environ.get('PYTEST', False):
+            return [
+                ["code", "email", "python"],
+                ["1", "test1@gmail.com", "yes"],
+                ["2", "test2@gmail.com", "yes"],
+                ["3", "test3@gmail.com", "no"],
+            ]
+
+        # Get reall cells.
         assert sname
         assert mode in "ROWS", "COLUMNS"
         assert type(x) is tuple
@@ -70,6 +96,14 @@ class Wolverine(object):
                                   majdim=mode)) or []
 
     def iterator(self, sname, bulk=50):
+        """ Generator for the whole sheet. """
+
+        # Send fake values.
+        if os.environ.get('PYTEST', False):
+            yield {"code": "1", "email": "email1@gmail.com", "python": "yes"}
+            yield {"code": "2", "email": "email2@gmail.com", "python": "yes"}
+            yield {"code": "3", "email": "email3@gmail.com", "python": "no"}
+            return
 
         # Initializing...
         logger.debug("Iterating over: {}".format(sname))
