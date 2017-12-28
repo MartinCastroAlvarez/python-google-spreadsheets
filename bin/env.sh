@@ -6,4 +6,4 @@ then
 	virtualenv -p python3 $DIR/../env
 fi
 cd $DIR/../
-source env/bin/activate
+source .env/bin/activate
