@@ -138,3 +138,16 @@ jobs:
             - run:
                 name: "Deploy if tests pass and branch is develop."
                 command: ls -la
+
+# Do the deployment
+# if all the tests
+# are PASSED.
+deployment:
+    production: # just a label; label names are completely up to you
+        branch: master
+        commands:
+            - ./bin/deploy.sh PROD
+    dev: # just a label; label names are completely up to you
+        branch: develop
+        commands:
+            - ./bin/deploy.sh PROD
