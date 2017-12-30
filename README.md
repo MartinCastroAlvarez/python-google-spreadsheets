@@ -9,13 +9,15 @@ allows you to download CSV files from Google Sheets.
 
 ![flow](/flow.png)
 
+# Installation 
+
 ### Installation
 ```
 pip install -e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine -I
 echo "-e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine" >> requirements.txt
 ```
 
-### Environment
+### Configuration
 Set your environment variables.
 ```
 GOOGLE_PRIVATE_KEY_ID=""
@@ -24,6 +26,8 @@ GOOGLE_CLIENT_EMAIL=""
 GOOGLE_CLIENT_ID=""
 GOOGLE_TYPE=""
 ```
+
+# Usage
 
 ### Export
 Export Google Sheet to JSON.
