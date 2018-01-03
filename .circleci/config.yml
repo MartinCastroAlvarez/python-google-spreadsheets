@@ -29,22 +29,11 @@ jobs:
         # to run the steps?
         working_directory: ~/app-circleci-tests
 
-        # Only in master branch
-        # and develop branch
-        # and hotfix-*
-        # and develop-*.
-        branches:
-            only:
-                - master 
-                - develop
-                - develop-*
-                - hotfix-*
-
         # These are the list of steps
         # to be performaned for this job.
         steps:
 
-            # Create a virtual environment.
+            # Checkout source code.
             - checkout
 
             # Update environment.
@@ -93,51 +82,6 @@ jobs:
                 command: |
                     ./bin/flake8.sh
 
-    # Define a job called 'deploy_to_prod'.
-    deploy-to-prod:
-
-        # Deploy using this image.
-        docker:
-            # Run in an Ubuntu environment.
-            - image: ubuntu:16.04
-
-        # In which directory
-        # to run the steps?
-        working_directory: ~/app-circleci-tests
-
-        # Only in master branch.
-        branches:
-            only:
-                - master 
-
-        # Do the deployment.
-        steps:
-            - run:
-                name: "Deploy if tests pass and branch is master."
-                command: ls -la
-
-    # Define a job called 'deploy_to_dev'.
-    deploy-to-dev:
-
-        # Deploy using this image.
-        docker:
-            # Run in an Ubuntu environment.
-            - image: ubuntu:16.04
-
-        # In which directory
-        # to run the steps?
-        working_directory: ~/app-circleci-tests
-
-        # Only in develop branch.
-        branches:
-            only:
-                - develop
-
-        # Do the deployment.
-        steps:
-            - run:
-                name: "Deploy if tests pass and branch is develop."
-                command: ls -la
 
 # Do the deployment
 # if all the tests
@@ -146,8 +90,8 @@ deployment:
     production: # just a label; label names are completely up to you
         branch: master
         commands:
-            - ./bin/deploy.sh PROD
-    dev: # just a label; label names are completely up to you
-        branch: develop
+            - ls ./bin/deploy.sh && ./bin/deploy.sh PROD
+    development: # just a label; label names are completely up to you
+        branch: dev
         commands:
-            - ./bin/deploy.sh PROD
+            - ls ./bin/deploy.sh && ./bin/deploy.sh DEV
