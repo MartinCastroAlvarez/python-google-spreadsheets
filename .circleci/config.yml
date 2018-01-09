@@ -35,6 +35,8 @@ jobs:
 
             # Checkout source code.
             - checkout
+            - run: git submodule sync
+            - run: git submodule update --init
 
             # Update environment.
             - run:
@@ -46,7 +48,8 @@ jobs:
             - run:
                 name: "Install Operating System  dependencies."
                 command: |
-                    apt-get install -y python3-pip python3 python3-virtualenv python-flake8 python3-flake8 python3-venv git 
+                    apt-get install -y python3-pip python3 python3-virtualenv
+                    apt-get install python-flake8 python3-flake8 python3-venv git 
 
             # Restore from cache.
             - restore_cache:
@@ -82,16 +85,128 @@ jobs:
                 command: |
                     ./bin/flake8.sh
 
+    # Define a job called 'deploy-prod'.
+    deploy-prod:
 
-# Do the deployment
-# if all the tests
-# are PASSED.
-deployment:
-    production: # just a label; label names are completely up to you
-        branch: master
-        commands:
-            - ls ./bin/deploy.sh && ./bin/deploy.sh PROD
-    development: # just a label; label names are completely up to you
-        branch: dev
-        commands:
-            - ls ./bin/deploy.sh && ./bin/deploy.sh DEV
+        # Deploy the application
+        # in this generic docker image.
+        docker:
+            - image: docker:stable-git
+
+        # In which directory
+        # to run the steps?
+        working_directory: ~/app-circleci-tests
+
+        # These are the steps
+        # that will be executed to
+        # deploy the application.
+        steps:
+
+            # Setup Docker connection.
+            - setup_remote_docker
+
+            # Checkout code.
+            - checkout
+
+            # Update submodules.
+            - run:
+                name: Update submodules.
+                command: |
+                    git submodule sync
+                    git submodule update --init
+
+            # Do login using
+            # DOCKERHUB_USERNAME and
+            # DOCKERHUB_PASSWORD
+            # environment variables.
+            - run:
+                name: Login to DockerHub
+                command: ./bin/login.sh
+
+            # Deploy to PROD production environment.
+            - run:
+                name: Build and push to dockerhub
+                command: ./bin/deploy.sh PROD
+
+    # Define a job called 'deploy-qa'.
+    deploy-dev:
+
+        # Deploy the application
+        # in this generic docker image.
+        docker:
+            - image: docker:stable-git
+
+        # In which directory
+        # to run the steps?
+        working_directory: ~/app-circleci-tests
+
+        # These are the steps
+        # that will be executed to
+        # deploy the application.
+        steps:
+
+            # Setup Docker connection.
+            - setup_remote_docker
+
+            # Checkout code.
+            - checkout
+
+            # Update submodules.
+            - run:
+                name: Update submodules.
+                command: |
+                    git submodule sync
+                    git submodule update --init
+
+            # Do login using
+            # DOCKERHUB_USERNAME and
+            # DOCKERHUB_PASSWORD
+            # environment variables.
+            - run:
+                name: Login to DockerHub
+                command: ./bin/login.sh
+
+            # Deploy to QA test environment.
+            - run:
+                name: Build and push to dockerhub
+                command: ./bin/deploy.sh QA
+
+# This defines the
+# order in which the
+# jobs are executed
+# and the dependencies.
+workflows:
+
+    # This uses CircleCI v2.0.
+    version: 2
+
+    # Define the name of this
+    # workflow.
+    test_and_build:
+
+        # Jobs that will be
+        # executed in order.
+        jobs:
+
+            # First, build and test.
+            - build
+
+            # Deploy to PROD only
+            # if you are at the
+            # master branch.
+            - deploy-prod:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only: master
+
+            # Deploy to QA only
+            # if you are in the
+            # dev branch.
+            - deploy-dev:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only: dev 

@@ -1,0 +1,3 @@
+[submodule "bin"]
+    path = bin
+    url = https://85c6662b19f470ff59c966de570f41c5b7b8c321:x-oauth-basic@github.com/valleyworks/bin
