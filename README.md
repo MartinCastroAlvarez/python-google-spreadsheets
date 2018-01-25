@@ -1,4 +1,4 @@
-# wolverine v2.12
+# wolverine v3.1
 Library for managing your Google Sheets.
 
 ![logo](/logo.png)

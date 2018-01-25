@@ -9,3 +9,6 @@ venv/
 .environment
 tmp/
 Dockerfile
+.flake8
+src/
+.pylintrc
