@@ -1,0 +1,28 @@
+### Export
+Export Google Sheet to JSON.
+```
+from wolverine import Wolverine
+
+w = Wolverine('23192312-12312-123-123')
+j = w.getCells("TestSheet", (1,2), (4, 5))
+```
+
+### Dimensions
+Get Google Sheet dimensions.
+```
+from wolverine import Wolverine
+
+w = Wolverine('23192312-12312-123-123')
+total_rows = w.getTotalRows("TestSheet")
+total_columns = w.getTotalColumns("TestSheet")
+```
+
+### Iteration
+Iterate over all rows in the Google Sheet.
+```
+from wolverine import Wolverine
+
+w = Wolverine('23192312-12312-123-123')
+for row in w.iterator("TestSheet"):
+    print(row)
+```
