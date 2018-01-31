@@ -1,5 +1,5 @@
 # wolverine 3.1
-Library for managing your Google Sheets.
+#### *Library for managing your Google Sheets.*
 
 ![logo](/.readme/logo.png)
 
@@ -15,18 +15,14 @@ echo "-e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine" >> re
 ```
 # Configuration
 The following environment variables are required:
-```
-export GOOGLE_PRIVATE_KEY_ID='...'
-export GOOGLE_PRIVATE_KEY='...'
-export GOOGLE_CLIENT_EMAIL='...'
-export GOOGLE_CLIENT_ID='...'
-export GOOGLE_TYPE='...'
-```
+- [ ] GOOGLE_PRIVATE_KEY_ID
+- [ ] GOOGLE_PRIVATE_KEY
+- [ ] GOOGLE_CLIENT_EMAIL
+- [ ] GOOGLE_CLIENT_ID
+- [ ] GOOGLE_TYPE
 You can also set the following variables if running in a test environment:
-```
-export DEBUG='yes'
-export PYTEST='yes'
-```
+- [ ] DEBUG
+- [ ] PYTEST
 # Usage
 ### Export
 Export Google Sheet to JSON.
