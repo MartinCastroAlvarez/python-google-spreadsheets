@@ -12,3 +12,4 @@ Dockerfile
 .flake8
 src/
 .pylintrc
+.pytest_cache/

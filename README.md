@@ -7,7 +7,6 @@
 ![flow](/.readme/flow.png)
 
 # Installation
-### Python Eggs
 Install this library as a dependency in your project.
 ```
 pip install -e git+ssh://git@github.com/valleyworks/wolverine.git#egg=wolverine-I
@@ -20,6 +19,7 @@ The following environment variables are required:
 - [ ] GOOGLE_CLIENT_EMAIL
 - [ ] GOOGLE_CLIENT_ID
 - [ ] GOOGLE_TYPE
+
 You can also set the following variables if running in a test environment:
 - [ ] DEBUG
 - [ ] PYTEST
