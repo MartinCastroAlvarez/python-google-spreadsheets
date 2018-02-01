@@ -1,4 +1,4 @@
-# wolverine 3.1
+# wolverine v3.2
 #### *Library for managing your Google Sheets.*
 
 ![logo](/.readme/logo.png)

@@ -3,12 +3,12 @@ Main py.test configuration file.
 All fixtures are defined here.
 """
 
-import pytest
+import rogue
 
 from wolverine import Wolverine
 
 
-@pytest.fixture
+@rogue.fixture
 def w():
     """
     Returns a fake

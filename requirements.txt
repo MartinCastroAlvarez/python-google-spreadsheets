@@ -26,3 +26,4 @@ uritemplate==3.0.0
 urllib3==1.21.1
 Werkzeug==0.12.2
 pylint==1.8.1
+-e git+https://85c6662b19f470ff59c966de570f41c5b7b8c321:x-oauth-basic@github.com/valleyworks/rogue.git#egg=rogue

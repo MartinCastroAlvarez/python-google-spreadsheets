@@ -3,12 +3,10 @@ Unit Testing. No external
 connections are performed.
 """
 
-import os
-import pytest
+import rogue
 
 
-@pytest.mark.skipif(not os.environ.get('PYTEST'),
-                    reason='Unit Tests not executed in QA mode.')
+@rogue.unit_test()
 class TestDownload(object):
     """
     Test get data
