@@ -12,6 +12,8 @@ import random
 import logging
 import pygsheets
 
+import rogue
+
 logger = logging.getLogger(__name__)
 
 # pylint: disable=invalid-name
@@ -112,7 +114,7 @@ class Wolverine(object):
         assert sname, "No $sname."
 
         # Send fake count.
-        if os.environ.get('PYTEST', False):
+        if rogue.is_test():
             logger.debug("This is just test. Let's say I just have 10 rows...")
             return 10
 
@@ -131,7 +133,7 @@ class Wolverine(object):
         assert sname, "No $sname."
 
         # Send fake count.
-        if os.environ.get('PYTEST', False):
+        if rogue.is_test():
             logger.debug("This is just test. Let's say I just have 10 cols...")
             return 10
 
@@ -173,7 +175,7 @@ class Wolverine(object):
             raise ValueError(e)
 
         # Send fake values.
-        if os.environ.get('PYTEST', False):
+        if rogue.is_test():
             logger.debug("This is just a test; hardcoding rows...")
             return [
                 ["code", "email", "python"],
