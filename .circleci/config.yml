@@ -77,7 +77,7 @@ jobs:
                 TERM: xterm
         # In which directory
         # to run the steps?
-        working_directory: ~wolverine/
+        working_directory: ~/wolverine
         # These are the list of steps
         # to be performaned for this job.
         steps:

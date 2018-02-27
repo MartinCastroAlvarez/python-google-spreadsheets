@@ -13,3 +13,6 @@ Dockerfile
 src/
 .pylintrc
 .pytest_cache/
+.coverage
+.coveragerc
+.htmlcov

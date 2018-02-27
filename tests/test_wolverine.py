@@ -48,3 +48,26 @@ class TestDownload(object):
             assert "code" in row, row
             assert "email" in row, row
         assert i > 0
+
+    def test_create(self, w):
+        """
+        Create a new worksheet.
+        """
+        w.create('ipsum')
+        w.create('ipsum')
+        w.create('ipsum')
+
+    def test_delete(self, w):
+        """
+        Delete an existing worksheet.
+        """
+        w.delete('ipsum')
+        w.delete('ipsum')
+        w.delete('ipsum')
+
+    def test_upload(self, w):
+        """
+        Upload data to
+        Google Sheets.
+        """
+        w.upload('ipsum', data=[(1, 2), (1, 2)])

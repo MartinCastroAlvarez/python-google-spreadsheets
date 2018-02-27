@@ -1,4 +1,4 @@
-# wolverine v3.2
+# wolverine v3.3
 #### *Library for managing your Google Sheets.*
 
 ![logo](/.readme/logo.png)
@@ -23,6 +23,11 @@ The following environment variables are required:
 You can also set the following variables if running in a test environment:
 - [ ] DEBUG
 - [ ] PYTEST
+# Test Coverage
+This code has been tested by Rogue and the test coverage is:
+```
+64%
+```
 # Usage
 ### Export
 Export Google Sheet to JSON.

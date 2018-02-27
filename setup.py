@@ -14,7 +14,7 @@ setup(
 
     # This is the library
     # latest version.
-    version='3.2',
+    version='3.3',
 
     # These variabls describe
     # your package.
