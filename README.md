@@ -1,4 +1,4 @@
-# wolverine v3.3
+# wolverine v3.4
 #### *Library for managing your Google Sheets.*
 
 ![logo](/.readme/logo.png)
@@ -26,7 +26,7 @@ You can also set the following variables if running in a test environment:
 # Test Coverage
 This code has been tested by Rogue and the test coverage is:
 ```
-64%
+63%
 ```
 # Usage
 ### Export

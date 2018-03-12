@@ -223,6 +223,16 @@ class Wolverine(object):
                 logger.warning("Sheet-to-be-deleted not found: %s.", sname)
         logger.debug("Deleted: %s.", sname)
 
+    def clear(self, sname):
+        """
+        Clears an entire Worksheet.
+        http://pygsheets.readthedocs.io/en/latest/worksheet.html#pygsheets.Worksheet.clear
+        """
+        logger.debug("Clearing: %s.", sname)
+        if not rogue.is_test():
+            self.getSheet(sname).clear(start="A1", end=None)
+        logger.debug("Cleared: %s.", sname)
+
     def upload(self, sname, data=None):
         """
         Updates multiple rows and replaces
