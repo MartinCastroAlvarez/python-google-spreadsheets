@@ -4,14 +4,13 @@ Wolverine lets you connect with Google Spreadsheets.
 
 import os
 import json
-import begin
 
-import logging
+import uuid
+
+import begin
 
 import googleapiclient
 import pygsheets
-
-logger = logging.getLogger(__name__)
 
 
 class Credentials(object):
@@ -38,74 +37,167 @@ class Credentials(object):
     GOOGLE_CLIENT_EMAIL = "client_email"
     GOOGLE_CLIENT_ID = "client_id"
     GOOGLE_TYPE = "type"
+    GOOGLE_TOKEN_URI = "token_uri"
+    GOOGLE_DEFAULT_TOKEN_URI = "https://oauth2.googleapis.com/token"
+
+    def __init__(self, credentials: dict=None):
+        """
+        Constructing credentials.
+
+        @raises ValueError: If credentials are empty.
+        @raises TypeError: If credentials are not a valid dict.
+        """
+        if not credentials:
+            raise ValueError("credentials")
+        if not isinstance(credentials, dict):
+            raise TypeError("credentials")
+        self.__data = credentials
+
+    def __str__(self) -> str:
+        """ String serializer. """
+        return "<Credentials: {}>".format(self.to_json())
 
     @property
-    def google_private_key_id(self) -> str:
-        """ Access google private key ID. """
+    def private_key_id(self) -> str:
+        """
+        Access Google private key ID.
+
+        @raises KeyError: If key name is not in JSON credentials.
+        @raises ValueError: If key name is empty.
+        @raises TypeError: if key value is not a valid string.
+        @raises AttributeError: If credentials data is empty.
+
+        @returns: Key value as a string.
+        """
         if self.GOOGLE_PRIVATE_KEY_ID not in self.__data:
             raise KeyError(self.GOOGLE_PRIVATE_KEY_ID)
         if not self.__data[self.GOOGLE_PRIVATE_KEY_ID]:
             raise ValueError(self.GOOGLE_PRIVATE_KEY_ID)
-        if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY_ID]), str:
+        if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY_ID], str):
             raise TypeError(self.GOOGLE_PRIVATE_KEY_ID)
+        if not self.__data:
+            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_PRIVATE_KEY_ID]
 
     @property
-    def google_private_key(self) -> str:
-        """ Access google private key. """
+    def private_key(self) -> str:
+        """
+        Access Google private key.
+
+        @raises KeyError: If key name is not in JSON credentials.
+        @raises ValueError: If key name is empty.
+        @raises TypeError: if key value is not a valid string.
+        @raises AttributeError: If credentials data is empty.
+
+        @returns: Key value as a string.
+        """
         if self.GOOGLE_PRIVATE_KEY not in self.__data:
             raise KeyError(self.GOOGLE_PRIVATE_KEY)
         if not self.__data[self.GOOGLE_PRIVATE_KEY]:
             raise ValueError(self.GOOGLE_PRIVATE_KEY)
         if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY], str):
             raise TypeError(self.GOOGLE_PRIVATE_KEY)
-        return self.__data[self.GOOGLE_PRIVATE_KEY
+        return self.__data[self.GOOGLE_PRIVATE_KEY]
 
     @property
-    def google_client_id(self) -> str:
-        """ Access google client ID. """
+    def client_id(self) -> str:
+        """
+        Access Google client ID.
+
+        @raises KeyError: If key name is not in JSON credentials.
+        @raises TypeError: if key value is not a valid string.
+        @raises AttributeError: If credentials data is empty.
+
+        @returns: Key value as a string.
+        """
         if self.GOOGLE_CLIENT_ID not in self.__data:
             raise KeyError(self.GOOGLE_CLIENT_ID)
-        if not self.__data[self.GOOGLE_CLIENT_ID]:
-            raise ValueError(self.GOOGLE_CLIENT_ID)
         if not isinstance(self.__data[self.GOOGLE_CLIENT_ID], str):
             raise TypeError(self.GOOGLE_CLIENT_ID)
+        if not self.__data:
+            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_CLIENT_ID]
 
     @property
-    def google_client_email(self) -> str:
-        """ Access google client email. """
+    def client_email(self) -> str:
+        """
+        Access Google client email.
+
+        @raises KeyError: If key name is not in JSON credentials.
+        @raises ValueError: If key name is empty.
+        @raises TypeError: if key value is not a valid string.
+        @raises AttributeError: If credentials data is empty.
+
+        @returns: Key value as a string.
+        """
         if self.GOOGLE_CLIENT_EMAIL not in self.__data:
             raise KeyError(self.GOOGLE_CLIENT_EMAIL)
         if not self.__data[self.GOOGLE_CLIENT_EMAIL]:
             raise ValueError(self.GOOGLE_CLIENT_EMAIL)
         if not isinstance(self.__data[self.GOOGLE_CLIENT_EMAIL], str):
             raise TypeError(self.GOOGLE_CLIENT_EMAIL)
+        if not self.__data:
+            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_CLIENT_EMAIL]
 
     @property
-    def google_type(self) -> str:
-        """ Access google type. """
+    def account_type(self) -> str:
+        """
+        Access Google account type.
+
+        @raises KeyError: If key name is not in JSON credentials.
+        @raises ValueError: If key name is empty.
+        @raises TypeError: if key value is not a valid string.
+        @raises AttributeError: If credentials data is empty.
+
+        @returns: Key value as a string.
+        """
         if self.GOOGLE_TYPE not in self.__data:
             raise KeyError(self.GOOGLE_TYPE)
         if not self.__data[self.GOOGLE_TYPE]:
             raise ValueError(self.GOOGLE_TYPE)
         if not isinstance(self.__data[self.GOOGLE_TYPE], str):
             raise TypeError(self.GOOGLE_TYPE)
+        if not self.__data:
+            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_TYPE]
 
+    def to_json(self) -> dict:
+        """ JSON serializer. """
+        return {
+            self.GOOGLE_PRIVATE_KEY_ID: self.private_key_id,
+            self.GOOGLE_PRIVATE_KEY: self.private_key,
+            self.GOOGLE_CLIENT_EMAIL: self.client_email,
+            self.GOOGLE_CLIENT_ID: self.client_id,
+            self.GOOGLE_TYPE: self.account_type,
+            self.GOOGLE_TOKEN_URI: self.GOOGLE_DEFAULT_TOKEN_URI,
+        }
 
-class Profile(object):
+
+class Configuration(object):
     """ Google profile. """
 
-    def __init__(self, profile_path: str=None):
-        if not profile_path:
-            raise ValueError("profile_path")
-        if not isinstance(profile_path, str):
-            raise TypeError("profile_path")
-        if not os.path.isfile(profile_path):
-            raise RuntimeError("File not found:", profile_path)
-        self.__profile_path = profile_path
+    def __init__(self, config_path: str=None):
+        """
+        Constructing Profile file.
+
+        @param config_path: Configuration file name.
+
+        @raises ValueError: If path name is empty.
+        @raises TypeError: if path name is not a valid string.
+        @raises RuntimeError: If config file is not a valid file.
+        """
+        if not config_path:
+            raise ValueError("config_path")
+        if not isinstance(config_path, str):
+            raise TypeError("config_path")
+        if not os.path.isfile(config_path):
+            raise RuntimeError("File not found:", config_path)
+        self.__config_path = config_path 
+
+    def __str__(self) -> str:
+        """ String serializer. """
+        return "<Configuration: {}>".format(self.__config_path)
 
     def get_credentials(self, profile_name: str=None) -> object:
         """
@@ -115,7 +207,7 @@ class Profile(object):
 
         @raises ValueError: If name is empty.
         @raises TypeError: If name is an invalid string.
-        @raises RuntimeError: If profiles path is not a valid file.
+        @raises RuntimeError: If config path is not a valid file.
         @raises KeyError: If name is not found in the profiles file.
         @raises ValueError: If file is not a valid JSON file.
 
@@ -125,12 +217,12 @@ class Profile(object):
             raise ValueError("profile_name")
         if not isinstance(profile_name, str):
             raise TypeError("profile_name")
-        if not os.path.isfile(profile_path):
-            raise RuntimeError("File not found:", profile_path)
-        with open(self.__profile_path, "r") as file_buffer:
+        if not os.path.isfile(config_path):
+            raise RuntimeError("File not found:", config_path)
+        with open(self.__config_path, "r") as file_buffer:
             data = json.loads(file_buffer.read().strip())
         if not data:
-            raise RuntimeError(self.__profile_path)
+            raise RuntimeError(self.__config_path)
         if not isinstance(data, dict):
             raise RuntimeError(type(data))
         if profile_name not in data:
@@ -140,234 +232,281 @@ class Profile(object):
         return Credentials(data[profile_name])
 
 
-profile_path = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
-p = Profile(profile_path)
-credentials = p.get_credentials("martin")
-import sys; sys.exit(0)
+class Connection(object):
+    """ Google Drive connection. """
 
-class Wolverine(object):
-    """
-    Google Sheets connector.
-
-    Wolverine requires the
-    following variables:
-    - GOOGLE_PRIVATE_KEY_ID
-    - GOOGLE_PRIVATE_KEY
-    - GOOGLE_CLIENT_EMAIL
-    - GOOGLE_CLIENT_ID
-    - GOOGLE_TYPE
-    """
-
-    def __init__(self, sheet_id):
+    def __init__(self, credentials: Credentials=None):
         """
-        Initializing some variables.
-        self._worksheets: Dictionary of Google Sheets pages.
-        self._gsheet: Reference to the Google Sheet object.
+        Constructing Google connection.
+
+        @param: Google credentials.
+
+        @raises TypeError: If credentials are not valid.
+        @raises ValueError: If credentials are empty.
         """
-        self._worksheets = {}
-        self._gsheet = None
-        logger.debug("Wolverine connection with %s initialized.", sheet_id)
-        assert sheet_id, sheet_id
-        self.sheet_id = sheet_id
+        if not credentials:
+            raise ValueError("credentials")
+        if not isinstance(credentials, Credentials):
+            raise TypeError(type(credentials))
+        self.__credentials = credentials
+        self.__connection = None
+
+    def __str__(self) -> str:
+        """ String serializer. """
+        return "<Connection: {}>".format(self.__connection)
 
     @property
-    def gsheet(self):
+    def connection(self) -> object:
         """
-        Get Google Sheet connection.
-        Create a new connection
-        if it does not already exist.
-        """
-        if not self._gsheet:
-            logger.debug("Loading creentials from $env...")
-            credentials = os.path.join(os.sep,
-                                       "tmp",
-                                       ".w-{}-{}.json".format(random.randint(0, 100),
-                                                              time.time()))
-            c = {
-                "private_key_id": os.environ['GOOGLE_PRIVATE_KEY_ID'],
-                "private_key": os.environ['GOOGLE_PRIVATE_KEY'].replace("\\n", "\n"),
-                "client_email": os.environ['GOOGLE_CLIENT_EMAIL'],
-                "client_id": os.environ['GOOGLE_CLIENT_ID'],
-                "type": os.environ['GOOGLE_TYPE'],
-            }
-            assert not os.path.isfile(credentials), "Wolverinte temp file already exists!"
-            logger.debug("Generating a temporal credentials file at %s", credentials)
-            with open(credentials, "w") as f:
-                json.dump(c, f)
-            logger.debug("Authorizing your Google credentials: %s", c)
-            google_connection = pygsheets.authorize(service_file=credentials)
-            logger.debug("Cleaning temporal files...")
-            os.remove(credentials)
-            logger.debug("Opening a new connection with Google Sheets...")
-            self._gsheet = google_connection.open_by_key(self.sheet_id)
-        return self._gsheet
+        This methods connects with Google server.
 
-    def getSheet(self, sname):
-        """
-        Get Google Sheet by name.  We store the sheet name
-        if it does not already exist.
-        http://pygsheets.readthedocs.io/en/latest/spreadsheet.html#pygsheets.Spreadsheet.worksheet_by_title
-        """
-        if sname not in self._worksheets:
-            logger.debug("Loading Google Sheet: %s", sname)
-            self._worksheets[sname] = self.gsheet.worksheet_by_title(sname)
-        return self._worksheets[sname]
+        @raises AttributeError: If credentials are empty.
 
-    def getTotalRows(self, sname):
+        @returns: Google connection instance.
         """
-        Returns the total
-        amount of rows.
-        """
-        logger.debug("Getting total amount of rows: %s", sname)
-        assert sname, "No $sname."
-        if rogue.is_test():
-            logger.debug("This is just test. Let's say I just have 10 rows...")
-            return 10
-        x = self.getSheet(sname).rows
-        logger.debug("There are %s rows.", x)
-        return x
+        if not self.__connection:
+            if not self.__credentials:
+                raise AttributeError("credentials")
+            random_name = "w-{}.json".format(uuid.uuid4().hex)
+            temp_file = os.path.join(os.sep, "tmp", random_name)
+            with open(temp_file, "w") as file_buffer:
+                json.dump(self.__credentials.to_json(), file_buffer)
+            self.__connection = pygsheets.authorize(service_file=temp_file)
+            os.remove(temp_file)
+        return self.__connection
 
-    def getTotalColumns(self, sname):
+    def get_spreadsheet(self, spreadsheet_id: str=None) -> object:
         """
-        Returns the amount
-        of columns in a sheet.
-        """
-        logger.debug("Getting total amount of columns: %s", sname)
-        assert sname, "No $sname."
-        if rogue.is_test():
-            logger.debug("This is just test. Let's say I just have 10 cols...")
-            return 10
-        x = self.getSheet(sname).cols
-        logger.debug("There are %s cols.", x)
-        return x
+        Constructing spreadsheet.
 
-    def getCells(self, sname, x, y, mode="ROWS"):
+        @param spreadsheet_id: Spreadsheet ID.
+
+        @raises ValueError: If spreadsheet ID is empty.
+        @raises TypeError: If spreadsheet ID is an invalid string.
+
+        @returns: Spreadsheet instance.
         """
-        Load cells as JSON object.
-        :param sname: Google Sheet name.
-        :param x: Tuple. Beginning coordinates.
-        :param y: Tuple. End coordinates.
-        :param mode: Read as rows or cols.
+        if not spreadsheet_id:
+            raise ValueError("spreadsheet_id")
+        if not isinstance(spreadsheet_id, str):
+            raise TypeError("spreadsheet_id")
+        s = self.connection.open_by_key(spreadsheet_id)
+        return Spreadsheet(s)
+
+
+class Spreadsheet(object):
+    """ Google Spreadsheet. """
+
+    def __init__(self, spreadsheet: pygsheets.spreadsheet.Spreadsheet=None):
         """
-        logger.debug("Getting cells from %s x=%s y=%s as %s",
-                     sname,
-                     x,
-                     y,
-                     mode)
+        Constructing spreadsheet.
+
+        @param spreadsheet: Spreadsheet object.
+
+        @raises ValueError: If spreadsheet is empty.
+        @raises TypeError: If spreadsheet is invalid.
+        """
+        if not spreadsheet:
+            raise ValueError("spreadsheet")
+        if not isinstance(spreadsheet, pygsheets.spreadsheet.Spreadsheet):
+            raise TypeError("spreadsheet")
+        self.__spreadsheet = spreadsheet
+
+    @property
+    def spreadsheet(self):
+        """ Property to access raw spreadsheet. """
+        return self.__spreadsheet
+
+    def __str__(self) -> str:
+        """ String serializer. """
+        return "<Spreadsheet: {}>".format(self.__spreadsheet)
+
+    def get_worksheet(self, sheet_name: str=None) -> object:
+        """
+        Returns work sheet name.
+
+        @param sheet_name: Sheet name.
+
+        @raises ValueError: If sheet is empty.
+        @raises TypeError: If sheet is an invalid string.
+
+        @returns: Worksheet instance.
+        """
+        if not sheet_name:
+            raise ValueError("sheet_name")
+        if not isinstance(sheet_name, str):
+            raise TypeError("sheet_name")
         try:
-            assert sname, "No $sname."
-            assert x, "No $x."
-            assert y, "No $y."
-            assert mode, "No mode."
-            assert mode in ("ROWS", "COLUMNS"), mode
-            assert isinstance(x, tuple), "$x must be a tuple."
-            assert isinstance(y, tuple), "$y must be a tuple."
-            assert len(x) == 2, "$x must have a length of 2."
-            assert len(y) == 2, "$y must have a length of 2."
-            assert x[0] > 0, "$x[0] must be positive."
-            assert y[0] > 0, "$y[0] must be positive."
-            assert x[1] >= x[0], "$x[1] must be higher or equal to $x[0]."
-            assert y[1] >= y[0], "$x[1] must be higher or equal to $x[0]."
-            assert x[1] <= self.getTotalRows(sname), "x[1] is too high."
-            assert y[1] <= self.getTotalRows(sname), "y[1] is too high."
-        except AssertionError as e:
-            raise ValueError(e)
-        if rogue.is_test():
-            logger.debug("This is just a test; hardcoding rows...")
-            return [
-                ["code", "email", "python"],
-                ["1", "test1@gmail.com", "yes"],
-                ["2", "test2@gmail.com", "yes"],
-                ["3", "test3@gmail.com", "no"],
-            ]
-        logger.debug("Loading google sheet...")
-        sh = self.getSheet(sname)
-        logger.debug("Getting cells...")
-        sheet_cells = list(sh.get_values((x[0], y[0]),
-                                         (x[1], y[1]),
-                                         majdim=mode)) or []
-        logger.debug("Found: %s", sheet_cells)
-        return sheet_cells
+            w = self.__spreadsheet.worksheet_by_title(sheet_name)
+        except pygsheets.exceptions.WorksheetNotFound:
+            raise Worksheet.NotFound(sheet_name)
+        return Worksheet(w)
 
-    def iterator(self, sname, bulk=50):
+    def delete_worksheet(self, sheet_name: str=None) -> None:
         """
-        Generator for the whole sheet.
-        """
-        logger.debug("Iterating over: %s", sname)
-        assert sname, "No $sname."
-        y = self.getTotalColumns(sname)
-        sheet_header = self.getCells(sname, (1, 1), (1, y), mode="ROWS")[0]
-        logger.debug("Head is: %s", sheet_header)
-        must_exit = False
-        i = 2
-        while i < self.getTotalRows(sname) and not must_exit:
-            logger.debug("Fetching more rows...")
-            j = min(i + bulk, self.getTotalRows(sname))
-            for row in self.getCells(sname, (i, j), (1, y), mode="ROWS"):
-                logger.debug("Body is: %s", row)
-                if not row or (len(row) == 1 and not row[0]):
-                    logger.debug("No more rows to fetch!")
-                    must_exit = True
-                    break
-                data_dict = {}
-                for k in range(0, min(len(sheet_header), len(row))):
-                    if sheet_header[k]:
-                        data_dict[sheet_header[k]] = row[k]
-                logger.debug("Returning: %s", data_dict)
-                yield data_dict
-            logger.debug("Moving cursor to %s", j)
-            i = j
-        assert i > 2, i
+        Delete work sheet by name.
 
-    def create(self, sname, rows=20, cols=20):
-        """
-        Creates a new Google Sheet
-        worksheet with this name.
-        http://pygsheets.readthedocs.io/en/latest/spreadsheet.html#pygsheets.Spreadsheet.add_worksheet
-        """
-        logger.debug("Creating worksheet: %s.", sname)
-        if not rogue.is_test():
-            try:
-                self.gsheet.add_worksheet(sname, rows=rows, cols=cols)
-            except googleapiclient.errors.HttpError as e:
-                if "already exists" in str(e):
-                    logger.warning("Sheet %s already exists.", sname)
-                else:
-                    raise
-        logger.debug("Created: %s.", sname)
+        @param sheet_name: Sheet name.
 
-    def delete(self, sname):
-        """
-        Delets an existing Google Sheet
-        http://pygsheets.readthedocs.io/en/latest/spreadsheet.html#pygsheets.Spreadsheet.del_worksheet
-        """
-        logger.debug("Deleting worksheet: %s.", sname)
-        if not rogue.is_test():
-            try:
-                self.gsheet.del_worksheet(self.getSheet(sname))
-            except pygsheets.exceptions.WorksheetNotFound:
-                logger.warning("Sheet-to-be-deleted not found: %s.", sname)
-        logger.debug("Deleted: %s.", sname)
+        @raises ValueError: If sheet is empty.
+        @raises TypeError: If sheet is an invalid string.
 
-    def clear(self, sname):
+        @returns: None.
         """
-        Clears an entire Worksheet.
-        http://pygsheets.readthedocs.io/en/latest/worksheet.html#pygsheets.Worksheet.clear
-        """
-        logger.debug("Clearing: %s.", sname)
-        if not rogue.is_test():
-            self.getSheet(sname).clear(start="A1", end=None)
-        logger.debug("Cleared: %s.", sname)
+        if not sheet_name:
+            raise ValueError("sheet_name")
+        if not isinstance(sheet_name, str):
+            raise TypeError("sheet_name")
+        try:
+            self.__spreadsheet.del_worksheet(self.get_worksheet(sheet_name).worksheet)
+        except Worksheet.NotFound:
+            pass
 
-    def upload(self, sname, data=None):
+    def create_worksheet(self, sheet_name: str=None) -> object:
         """
-        Updates multiple rows and replaces
-        all contents with $data.
-        http://pygsheets.readthedocs.io/en/latest/worksheet.html#pygsheets.Worksheet.update_cells
-        Currently, the maximum amount
-        of cells is: 2.000.000 (1414 * 1414).
+        Creates a work sheet by name.
+
+        @param sheet_name: Sheet name.
+
+        @raises ValueError: If sheet is empty.
+        @raises TypeError: If sheet is an invalid string.
+
+        @returns: Worksheet instance.
         """
-        logger.debug("Uploading: %s.", sname)
-        if not rogue.is_test():
-            self.getSheet(sname).update_cells((1, 1), data, extend=True)
-        logger.debug("Uploaded: %s.", sname)
+        if not sheet_name:
+            raise ValueError("sheet_name")
+        if not isinstance(sheet_name, str):
+            raise TypeError("sheet_name")
+        try:
+            w = self.__spreadsheet.add_worksheet(sheet_name)
+            return Worksheet(w)
+        except googleapiclient.errors.HttpError as e:
+            if "already exists" in str(e):
+                return self.get_worksheet(sheet_name)
+            raise
+
+
+class Worksheet(object):
+    """ Google Worksheet. """
+
+    class NotFound(Exception):
+        """ Raised when Worksheet was not found. """
+
+    class AlreadyExists(Exception):
+        """ Raised when Worksheet already exists. """
+
+    def __init__(self, worksheet: pygsheets.spreadsheet.Worksheet=None):
+        """
+        Constructing sheet.
+
+        @param worksheet: Spreadsheet object.
+
+        @raises ValueError: If sheet is empty.
+        @raises TypeError: If sheet is invalid.
+        """
+        if not worksheet:
+            raise ValueError("sheet")
+        if not isinstance(worksheet, pygsheets.spreadsheet.Worksheet):
+            raise TypeError("sheet")
+        self.__worksheet = worksheet
+
+    @property
+    def worksheet(self):
+        """ Property to access raw worksheet. """
+        return self.__worksheet
+
+    def __str__(self) -> str:
+        """ String serializer. """
+        return "<Worksheet: {} [{} x {}]>".format(self.__worksheet, self.height, self.width)
+
+    @property
+    def height(self) -> int:
+        """ Returns sheet number of rows. """
+        return self.__worksheet.rows
+
+    @property
+    def width(self) -> int:
+        """ Returns sheet number of columns. """
+        return self.__worksheet.cols
+
+    def clear_cells(self) -> None:
+        """ Clear all cells. """
+        self.__worksheet.clear(start="A1", end=None)
+
+    def get_cells(self, x1: int=None, y1: int=None, x2: int=None, y2: int=None) -> list:
+        """
+        Returns a worksheet cell.
+
+        @param x1: Coordinates.
+        @param x2: Coordinates.
+        @param y1: Coordinates.
+        @param y2: Coordinates.
+
+        @raises TypeError: If coordinate is not a valid integer.
+        @raises ValueError: If range is invalid.
+
+        @returns: List of lists.
+        """
+        if not isinstance(x1, int):
+            raise TypeError("x1")
+        if not isinstance(y1, int):
+            raise TypeError("y1")
+        if not x2:
+            x2 = x1
+        if not y2:
+            y2 = y1
+        if not isinstance(x2, int):
+            raise TypeError("x2")
+        if not isinstance(y2, int):
+            raise TypeError("y2")
+        if x1 < 1:
+            raise ValueError("x1")
+        if y1 < 1:
+            raise ValueError("x1")
+        if x2 < 1:
+            raise ValueError("x2")
+        if y2 < 1:
+            raise ValueError("y2")
+        return self.__worksheet.get_values((x1, y1), (x2, y2)) or []
+
+    def update_cells(self, x: int=None, y: int=None, data: object=None) -> None:
+        """
+        Update cells.
+
+        @param x: Coordinates.
+        @param y: Coordinates.
+        @param data: Data to update.
+        @param extend: Extend data.
+
+        @raises TypeError: If coordinate is not a valid integer.
+        @raises ValueError: If range is invalid.
+
+        @returns: None.
+        """
+        if not isinstance(x, int):
+            raise TypeError("x")
+        if not isinstance(y, int):
+            raise TypeError("y")
+        if x < 1:
+            raise ValueError("x")
+        if y < 1:
+            raise ValueError("x")
+        self.__worksheet.update_cells((x, y), data)
+
+
+config_path = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
+c = Configuration(config_path)
+credentials = c.get_credentials("ampush")
+c = Connection(credentials)
+s = c.get_spreadsheet("1t90q05AOBAiO2k5jegM0F4WSO8kMvaPzQsSSsF3HtPw")
+try:
+    w = s.get_worksheet("Sheet10")
+except Worksheet.NotFound:
+    w = s.create_worksheet("Sheet12")
+    w.clear_cells()
+    w.update_cells(1, 1, "a")
+    # s.delete_worksheet("Sheet12")
+    # w = self.get_worksheet(sheet_name)
+    pass
+raise Exception(w)
+raise Exception(w.get_cells(1, 1))
