@@ -553,19 +553,6 @@ class Default(object):
     PROFILE = "ampush"
     CONFIG = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
 
-"""
-w = s.get_worksheet("Sheet6")
-w.get_cells(1, 1)
-try:
-    w = s.get_worksheet("Sheet10")
-except Worksheet.NotFound:
-    w = s.create_worksheet("Sheet12")
-    w.update_cells(1, 1, [["a"]])
-finally:
-    # s.delete_worksheet("Sheet12")
-    pass
-"""
-
 
 @begin.subcommand
 @begin.logging
@@ -589,7 +576,6 @@ def details(profile=Default.PROFILE,
     for row in w.rows():
         print(row)
         
-
 
 @begin.subcommand
 @begin.logging
