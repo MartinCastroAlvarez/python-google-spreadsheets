@@ -485,6 +485,10 @@ class Worksheet(object):
             raise ValueError("x2")
         if y2 < 1:
             raise ValueError("y2")
+        if x1 > x2:
+            raise ValueError(x1, x2)
+        if y1 > y2:
+            raise ValueError(y1, y2)
         return self.__worksheet.get_values((x1, y1), (x2, y2), include_tailing_empty=False) or []
 
     def update_cells(self, x: int=None, y: int=None, data: object=None) -> None:
@@ -534,6 +538,15 @@ class Worksheet(object):
             data = list(reader)
         self.update_cells(1, 1, data)
 
+    def rows(self):
+        """ Iterates over all rows. """
+        page_size = 200
+        row = 1
+        while row <= self.height:
+            cells = self.get_cells(row, 1, row + page_size, self.width)
+            yield from cells
+            row += page_size
+
 
 class Default(object):
     """ Default variables. """
@@ -552,6 +565,30 @@ finally:
     # s.delete_worksheet("Sheet12")
     pass
 """
+
+
+@begin.subcommand
+@begin.logging
+def details(profile=Default.PROFILE,
+            config_path=Default.CONFIG,
+            spreadsheet_id=None,
+            worksheet_name=None):
+    """
+    Print Spreadsheet content.
+
+    @param profile: Profile name.
+    @param config_path: Configuration path.
+    @param spreadsheet_id: Spreadsheet ID.
+    @param worksheet_name: Worksheet name.
+    """
+    c = Configuration(config_path)
+    c = c.get_credentials(profile)
+    g = Google(c)
+    s = g.get_spreadsheet(spreadsheet_id)
+    w = s.get_worksheet(worksheet_name)
+    for row in w.rows():
+        print(row)
+        
 
 
 @begin.subcommand
@@ -577,10 +614,7 @@ def upload(profile=Default.PROFILE,
     try:
         w = s.get_worksheet(worksheet_name)
     except Worksheet.NotFound:
-        print(1)
         w = s.create_worksheet(worksheet_name)
-    else:
-        print(2)
     finally:
         w.clear_cells()
         w.upload_csv(file_path)
