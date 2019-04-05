@@ -1,28 +1,53 @@
 """
-Wolverine lets you connect
-with Google Spreadsheets.
+Wolverine lets you connect with Google Spreadsheets.
 """
 
 import os
-import json
+import begin
+
+import logging
 
 import time
 import random
-
-import logging
+import os
+import json
 
 import googleapiclient
 import pygsheets
 
-import rogue
-
 logger = logging.getLogger(__name__)
-# pylint: disable=invalid-name
+
+
+class Profile(object):
+
+    def __init__(self):
+        
+
+    @property
+    def google_private_key_id(self):
+        return ""
+
+    @property
+    def google_private_key(self):
+        return ""
+
+    @property
+    def google_client_email(self):
+        return ""
+
+    @property
+    def google_client_id(self):
+        return ""
+
+    @property
+    def google_type(self):
+        return ""
 
 
 class Wolverine(object):
     """
     Google Sheets connector.
+
     Wolverine requires the
     following variables:
     - GOOGLE_PRIVATE_KEY_ID
