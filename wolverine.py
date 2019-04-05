@@ -1,10 +1,28 @@
 """
 Wolverine lets you connect with Google Spreadsheets.
+
+Example:
+>>> config_path = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
+>>> c = Configuration(config_path)
+>>> credentials = c.get_credentials("ampush")
+>>> c = Google(credentials)
+>>> s = c.get_spreadsheet("1t90q05AOBAiO2k5jegM0F4WSO8kMvaPzQsSSsF3HtPw")
+>>> w = s.get_worksheet("Sheet6")
+>>> w.get_cells(1, 1)
+>>> try:
+...     w = s.get_worksheet("Sheet10")
+...     except Worksheet.NotFound:
+...     w = s.create_worksheet("Sheet12")
+...     w.clear_cells()
+...     w.update_cells(1, 1, [["a"]])
+>>>     w.upload_csv("/opt/ampush/payments/tmp/dataloss/results.csv")
+... finally:
+...     s.delete_worksheet("Sheet12")
 """
 
 import os
+import csv
 import json
-
 import uuid
 
 import begin
@@ -217,8 +235,8 @@ class Configuration(object):
             raise ValueError("profile_name")
         if not isinstance(profile_name, str):
             raise TypeError("profile_name")
-        if not os.path.isfile(config_path):
-            raise RuntimeError("File not found:", config_path)
+        if not os.path.isfile(self.__config_path):
+            raise RuntimeError("File not found:", self.__config_path)
         with open(self.__config_path, "r") as file_buffer:
             data = json.loads(file_buffer.read().strip())
         if not data:
@@ -232,7 +250,7 @@ class Configuration(object):
         return Credentials(data[profile_name])
 
 
-class Connection(object):
+class Google(object):
     """ Google Drive connection. """
 
     def __init__(self, credentials: Credentials=None):
@@ -253,7 +271,7 @@ class Connection(object):
 
     def __str__(self) -> str:
         """ String serializer. """
-        return "<Connection: {}>".format(self.__connection)
+        return "<Google: {}>".format(self.__connection)
 
     @property
     def connection(self) -> object:
@@ -467,7 +485,7 @@ class Worksheet(object):
             raise ValueError("x2")
         if y2 < 1:
             raise ValueError("y2")
-        return self.__worksheet.get_values((x1, y1), (x2, y2)) or []
+        return self.__worksheet.get_values((x1, y1), (x2, y2), include_tailing_empty=False) or []
 
     def update_cells(self, x: int=None, y: int=None, data: object=None) -> None:
         """
@@ -476,9 +494,9 @@ class Worksheet(object):
         @param x: Coordinates.
         @param y: Coordinates.
         @param data: Data to update.
-        @param extend: Extend data.
 
-        @raises TypeError: If coordinate is not a valid integer.
+        @raises TypeError: If coordinates are not valid integers.
+        @raises TypeError: If data matrix is not valid.
         @raises ValueError: If range is invalid.
 
         @returns: None.
@@ -491,22 +509,87 @@ class Worksheet(object):
             raise ValueError("x")
         if y < 1:
             raise ValueError("x")
-        self.__worksheet.update_cells((x, y), data)
+        if not isinstance(data, list):
+            raise TypeError("data")
+        self.__worksheet.update_values((x, y), data)
+
+    def upload_csv(self, file_path: str=None) -> None:
+        """
+        Upload worksheet from local file.
+
+        @param file_path: Local file path.
+
+        @raises ValueError: If file path is empty.
+        @raises TypeError: If file path is not a valid string.
+        @raises RuntimeError: If file doesn't exist.
+
+        @returns: None.
+        """
+        if not isinstance(file_path, str):
+            raise TypeError("file_path")
+        if not os.path.isfile(file_path):
+            raise RuntimeError("File not found:", file_path)
+        with open(file_path, "r") as file_buffer:
+            reader = csv.reader(file_buffer)
+            data = list(reader)
+        self.update_cells(1, 1, data)
 
 
-config_path = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
-c = Configuration(config_path)
-credentials = c.get_credentials("ampush")
-c = Connection(credentials)
-s = c.get_spreadsheet("1t90q05AOBAiO2k5jegM0F4WSO8kMvaPzQsSSsF3HtPw")
+class Default(object):
+    """ Default variables. """
+    PROFILE = "ampush"
+    CONFIG = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
+
+"""
+w = s.get_worksheet("Sheet6")
+w.get_cells(1, 1)
 try:
     w = s.get_worksheet("Sheet10")
 except Worksheet.NotFound:
     w = s.create_worksheet("Sheet12")
-    w.clear_cells()
-    w.update_cells(1, 1, "a")
+    w.update_cells(1, 1, [["a"]])
+finally:
     # s.delete_worksheet("Sheet12")
-    # w = self.get_worksheet(sheet_name)
     pass
-raise Exception(w)
-raise Exception(w.get_cells(1, 1))
+"""
+
+
+@begin.subcommand
+@begin.logging
+def upload(profile=Default.PROFILE,
+           config_path=Default.CONFIG,
+           spreadsheet_id=None,
+           worksheet_name=None,
+           file_path=None):
+    """
+    Upload CSV to Google Spreadsheets.
+
+    @param profile: Profile name.
+    @param config_path: Configuration path.
+    @param file_path: CSV file path.
+    @param spreadsheet_id: Spreadsheet ID.
+    @param worksheet_name: Worksheet name.
+    """
+    c = Configuration(config_path)
+    c = c.get_credentials(profile)
+    g = Google(c)
+    s = g.get_spreadsheet(spreadsheet_id)
+    try:
+        w = s.get_worksheet(worksheet_name)
+    except Worksheet.NotFound:
+        print(1)
+        w = s.create_worksheet(worksheet_name)
+    else:
+        print(2)
+    finally:
+        w.clear_cells()
+        w.upload_csv(file_path)
+
+
+@begin.start(lexical_order=True, short_args=True)
+@begin.logging
+def run():
+    """
+    Main task.
+    This method will be called by executing this script from the CLI.
+    """
