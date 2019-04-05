@@ -3,14 +3,10 @@ Wolverine lets you connect with Google Spreadsheets.
 """
 
 import os
+import json
 import begin
 
 import logging
-
-import time
-import random
-import os
-import json
 
 import googleapiclient
 import pygsheets
@@ -18,31 +14,136 @@ import pygsheets
 logger = logging.getLogger(__name__)
 
 
+class Credentials(object):
+    """
+    Authentication credentials.
+
+    Example:
+    {
+        "type": "service_account",
+        "project_id": "ampushexperimenter",
+        "private_key_id": "dc06e632f3b54f2865086e50b85b207a37ed12c3",
+        "private_key": "-----BEGIN PRIVATE KEY-----\n...",
+        "client_email": "ampushexperimenter@appspot.gserviceaccount.com",
+        "client_id": "",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/..."
+    }
+    """
+
+    GOOGLE_PRIVATE_KEY_ID = "private_key_id"
+    GOOGLE_PRIVATE_KEY = "private_key"
+    GOOGLE_CLIENT_EMAIL = "client_email"
+    GOOGLE_CLIENT_ID = "client_id"
+    GOOGLE_TYPE = "type"
+
+    @property
+    def google_private_key_id(self) -> str:
+        """ Access google private key ID. """
+        if self.GOOGLE_PRIVATE_KEY_ID not in self.__data:
+            raise KeyError(self.GOOGLE_PRIVATE_KEY_ID)
+        if not self.__data[self.GOOGLE_PRIVATE_KEY_ID]:
+            raise ValueError(self.GOOGLE_PRIVATE_KEY_ID)
+        if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY_ID]), str:
+            raise TypeError(self.GOOGLE_PRIVATE_KEY_ID)
+        return self.__data[self.GOOGLE_PRIVATE_KEY_ID]
+
+    @property
+    def google_private_key(self) -> str:
+        """ Access google private key. """
+        if self.GOOGLE_PRIVATE_KEY not in self.__data:
+            raise KeyError(self.GOOGLE_PRIVATE_KEY)
+        if not self.__data[self.GOOGLE_PRIVATE_KEY]:
+            raise ValueError(self.GOOGLE_PRIVATE_KEY)
+        if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY], str):
+            raise TypeError(self.GOOGLE_PRIVATE_KEY)
+        return self.__data[self.GOOGLE_PRIVATE_KEY
+
+    @property
+    def google_client_id(self) -> str:
+        """ Access google client ID. """
+        if self.GOOGLE_CLIENT_ID not in self.__data:
+            raise KeyError(self.GOOGLE_CLIENT_ID)
+        if not self.__data[self.GOOGLE_CLIENT_ID]:
+            raise ValueError(self.GOOGLE_CLIENT_ID)
+        if not isinstance(self.__data[self.GOOGLE_CLIENT_ID], str):
+            raise TypeError(self.GOOGLE_CLIENT_ID)
+        return self.__data[self.GOOGLE_CLIENT_ID]
+
+    @property
+    def google_client_email(self) -> str:
+        """ Access google client email. """
+        if self.GOOGLE_CLIENT_EMAIL not in self.__data:
+            raise KeyError(self.GOOGLE_CLIENT_EMAIL)
+        if not self.__data[self.GOOGLE_CLIENT_EMAIL]:
+            raise ValueError(self.GOOGLE_CLIENT_EMAIL)
+        if not isinstance(self.__data[self.GOOGLE_CLIENT_EMAIL], str):
+            raise TypeError(self.GOOGLE_CLIENT_EMAIL)
+        return self.__data[self.GOOGLE_CLIENT_EMAIL]
+
+    @property
+    def google_type(self) -> str:
+        """ Access google type. """
+        if self.GOOGLE_TYPE not in self.__data:
+            raise KeyError(self.GOOGLE_TYPE)
+        if not self.__data[self.GOOGLE_TYPE]:
+            raise ValueError(self.GOOGLE_TYPE)
+        if not isinstance(self.__data[self.GOOGLE_TYPE], str):
+            raise TypeError(self.GOOGLE_TYPE)
+        return self.__data[self.GOOGLE_TYPE]
+
+
 class Profile(object):
+    """ Google profile. """
 
-    def __init__(self):
-        
+    def __init__(self, profile_path: str=None):
+        if not profile_path:
+            raise ValueError("profile_path")
+        if not isinstance(profile_path, str):
+            raise TypeError("profile_path")
+        if not os.path.isfile(profile_path):
+            raise RuntimeError("File not found:", profile_path)
+        self.__profile_path = profile_path
 
-    @property
-    def google_private_key_id(self):
-        return ""
+    def get_credentials(self, profile_name: str=None) -> object:
+        """
+        Public method to access profile credentials.
 
-    @property
-    def google_private_key(self):
-        return ""
+        @param profile_name: Profile name.
 
-    @property
-    def google_client_email(self):
-        return ""
+        @raises ValueError: If name is empty.
+        @raises TypeError: If name is an invalid string.
+        @raises RuntimeError: If profiles path is not a valid file.
+        @raises KeyError: If name is not found in the profiles file.
+        @raises ValueError: If file is not a valid JSON file.
 
-    @property
-    def google_client_id(self):
-        return ""
+        @returns: Credentials instance.
+        """
+        if not profile_name:
+            raise ValueError("profile_name")
+        if not isinstance(profile_name, str):
+            raise TypeError("profile_name")
+        if not os.path.isfile(profile_path):
+            raise RuntimeError("File not found:", profile_path)
+        with open(self.__profile_path, "r") as file_buffer:
+            data = json.loads(file_buffer.read().strip())
+        if not data:
+            raise RuntimeError(self.__profile_path)
+        if not isinstance(data, dict):
+            raise RuntimeError(type(data))
+        if profile_name not in data:
+            raise KeyError(profile_name)
+        if not data[profile_name]:
+            raise RuntimeError("profile_name")
+        return Credentials(data[profile_name])
 
-    @property
-    def google_type(self):
-        return ""
 
+profile_path = os.path.join(os.sep, "home", os.getlogin(), ".wolverine")
+p = Profile(profile_path)
+credentials = p.get_credentials("martin")
+import sys; sys.exit(0)
 
 class Wolverine(object):
     """
