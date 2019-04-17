@@ -38,8 +38,8 @@ class Credentials(object):
     Example:
     {
         "type": "service_account",
-        "project_id": "ampushexperimenter",
-        "private_key_id": "dc06e632f3b54f2865086e50b85b207a37ed12c3",
+        "project_id": "198239819823981298312",
+        "private_key_id": "19823981823981298398123",
         "private_key": "-----BEGIN PRIVATE KEY-----\n...",
         "client_email": "ampushexperimenter@appspot.gserviceaccount.com",
         "client_id": "",
