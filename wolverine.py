@@ -87,14 +87,14 @@ class Credentials(object):
 
         @returns: Key value as a string.
         """
+        if not self.__data:
+            raise AttributeError("credentials")
         if self.GOOGLE_PRIVATE_KEY_ID not in self.__data:
             raise KeyError(self.GOOGLE_PRIVATE_KEY_ID)
         if not self.__data[self.GOOGLE_PRIVATE_KEY_ID]:
             raise ValueError(self.GOOGLE_PRIVATE_KEY_ID)
         if not isinstance(self.__data[self.GOOGLE_PRIVATE_KEY_ID], str):
             raise TypeError(self.GOOGLE_PRIVATE_KEY_ID)
-        if not self.__data:
-            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_PRIVATE_KEY_ID]
 
     @property
@@ -109,6 +109,8 @@ class Credentials(object):
 
         @returns: Key value as a string.
         """
+        if not self.__data:
+            raise AttributeError("credentials")
         if self.GOOGLE_PRIVATE_KEY not in self.__data:
             raise KeyError(self.GOOGLE_PRIVATE_KEY)
         if not self.__data[self.GOOGLE_PRIVATE_KEY]:
@@ -128,12 +130,12 @@ class Credentials(object):
 
         @returns: Key value as a string.
         """
+        if not self.__data:
+            raise AttributeError("credentials")
         if self.GOOGLE_CLIENT_ID not in self.__data:
             raise KeyError(self.GOOGLE_CLIENT_ID)
         if not isinstance(self.__data[self.GOOGLE_CLIENT_ID], str):
             raise TypeError(self.GOOGLE_CLIENT_ID)
-        if not self.__data:
-            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_CLIENT_ID]
 
     @property
@@ -148,14 +150,14 @@ class Credentials(object):
 
         @returns: Key value as a string.
         """
+        if not self.__data:
+            raise AttributeError("credentials")
         if self.GOOGLE_CLIENT_EMAIL not in self.__data:
             raise KeyError(self.GOOGLE_CLIENT_EMAIL)
         if not self.__data[self.GOOGLE_CLIENT_EMAIL]:
             raise ValueError(self.GOOGLE_CLIENT_EMAIL)
         if not isinstance(self.__data[self.GOOGLE_CLIENT_EMAIL], str):
             raise TypeError(self.GOOGLE_CLIENT_EMAIL)
-        if not self.__data:
-            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_CLIENT_EMAIL]
 
     @property
@@ -170,14 +172,14 @@ class Credentials(object):
 
         @returns: Key value as a string.
         """
+        if not self.__data:
+            raise AttributeError("credentials")
         if self.GOOGLE_TYPE not in self.__data:
             raise KeyError(self.GOOGLE_TYPE)
         if not self.__data[self.GOOGLE_TYPE]:
             raise ValueError(self.GOOGLE_TYPE)
         if not isinstance(self.__data[self.GOOGLE_TYPE], str):
             raise TypeError(self.GOOGLE_TYPE)
-        if not self.__data:
-            raise AttributeError("credentials")
         return self.__data[self.GOOGLE_TYPE]
 
     def to_json(self) -> dict:
@@ -193,7 +195,7 @@ class Credentials(object):
 
 
 class Configuration(object):
-    """ Google profile. """
+    """ Configuration file entity. """
 
     def __init__(self, config_path: str=None):
         """
