@@ -1,5 +1,5 @@
 # Wolverine
-Google Spreadsheets integration.
+Google Spreadsheets CLI integration.
 
 ![alt text](/wallpaper.jpg)
 
